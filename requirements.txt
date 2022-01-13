@@ -1,0 +1,8 @@
+flask
+gunicorn
+beautifulsoup4
+pandas
+requests
+gspread==5.0.0
+oauth2client==4.1.3
+tweepy==4.4.0
