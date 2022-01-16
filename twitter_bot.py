@@ -90,6 +90,8 @@ def should_tweet():
 
 def sem_agenda():
     compromisso = gera_dados_tw()[2]
+    data_fuso = gera_data_tw()[0]
+    date_format = "%Y-%m-%d %H:%M:%S"
 
     if compromisso == ["Sem compromisso oficial"]:
         now = data_fuso
@@ -98,19 +100,24 @@ def sem_agenda():
 
         tweet_09 = data_fuso.strftime('%Y-%m-%d ') + "09:00:00"
         tweet_09 = datetime.strptime(tweet_09, date_format)
+        tweet_09 = pytz.timezone('America/Bahia').localize(tweet_09)
 
         tweet_14 = data_fuso.strftime('%Y-%m-%d ') + "14:00:00"
         tweet_14 = datetime.strptime(tweet_14, date_format)
+        tweet_14 = pytz.timezone('America/Bahia').localize(tweet_14)
 
         if start <= tweet_09 <= end or start <= tweet_14 <= end:
-            phrases_no_agenda = ["Sem agenda hoje... dia bom pra dar uma volta de jetski e comer camarão, 'talquey?'",
-                                "Sem compromisso oficial... Jair deve tá pensando em arrumar uma live pra criar polêmica.",
-                                "Nada na agenda... Ê, do jeito que Jair gosta!",
-                                "Sem compromissos oficiais... #partiumoto",
-                                "Nada na agenda hoje... Jair pode aparecer numa Havan pra fazer merchand",
-                                "Nada na agenda! Bem melhor do que começar a trabalhar às 10h e terminar às 15h30, né?"]
-            no_agenda = random.choice(phrases_no_agenda)
-            api.create_tweet(text = no_agenda)
+          phrases_no_agenda = ["Sem agenda hoje... dia bom pra dar uma volta de jetski e comer camarão, 'talquey?'",
+                              "Sem compromisso oficial... Jair deve tá pensando em arrumar uma live pra criar polêmica.",
+                              "Nada na agenda... Ê, do jeito que Jair gosta!",
+                              "Sem compromissos oficiais... #partiumoto",
+                              "Nada na agenda hoje... Jair pode aparecer numa Havan pra fazer merchand",
+                              "Nada na agenda! Bem melhor do que começar a trabalhar às 10h e terminar às 15h30, né?"]
+          no_agenda = random.choice(phrases_no_agenda)
+          api.create_tweet(text = no_agenda)
+        
+        else:
+          print(f"{tweet_09} & {tweet_14} is not in the interval {start} - {end}"))
 
    
 should_tweet()
