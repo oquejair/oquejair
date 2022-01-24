@@ -19,8 +19,8 @@ def gera_data_passado():
     resultado = []
     calendario = []
 
-    data = datetime.date(2019, 1, 30)
-    for i in range(29):
+    data = datetime.date(2019, 1, 30) #inserir data de 1 dia antes do mês que se quer verificar
+    for i in range(31): #inserir número de dias que há no mês verificado
       data = data + datetime.timedelta(days=1)
       data_passado = data.strftime('%d/%m/%Y')
       data_pass = data.strftime('%Y-%m-%d')
