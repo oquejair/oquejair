@@ -16,11 +16,11 @@ def gera_data_hoje():
     data = data_fuso.strftime('%d/%m/%Y')
     data_url = data_fuso.strftime('%Y-%m-%d')
     url_hoje = f"https://www.gov.br/planalto/pt-br/acompanhe-o-planalto/agenda-do-presidente-da-republica/{data_url}"
-
-    return data, url_hoje
+    
+    return data_fuso, data, url_hoje
 
 def gera_dados_hoje():
-    url_hoje = gera_data_hoje()[1]
+    url_hoje = gera_data_hoje()[2]
     resposta = requests.get(url_hoje)
     html = resposta.text
     soup = BeautifulSoup(html, "html.parser")
@@ -30,14 +30,14 @@ def gera_dados_hoje():
     if tag_inicio != []:
         hora_inicio = [i.text for i in tag_inicio]
     else:
-        hora_inicio = " - "
+        hora_inicio = " "
 
   #pegar hora do fim
     tag_fim = soup.find_all("time", {"class": "compromisso-fim"})
     if tag_fim != []:
         hora_fim = [h.text for h in tag_fim]
     else:
-        hora_fim = " - "
+        hora_fim = " "
 
   # pegar compromisso
     tag_compromisso = soup.find_all("h2", {"class": "compromisso-titulo"})
@@ -51,12 +51,12 @@ def gera_dados_hoje():
     if tag_local != []:
         local = [l.text for l in tag_local]
     else:
-        local = " - "
+        local = " "
     
     return hora_inicio, hora_fim, compromisso, local
     
 def gera_df():
-    data = gera_data_hoje()[0]
+    data = gera_data_hoje()[1]
     hora_inicio, hora_fim, compromisso, local = gera_dados_hoje()
     lista = list(zip(hora_inicio, hora_fim, compromisso, local))
     df = pd.DataFrame(lista, columns=["hora_inicio", "hora_fim", "compromisso", "local"])
@@ -66,16 +66,20 @@ def gera_df():
     
     return df
 
-def envia_sheets():
-    df = gera_df()
-    
+def login_sheets():
     spreadsheet_id = os.environ["GOOGLE_SHEET_ID"]
     conteudo_codificado = os.environ["GOOGLE_SHEETS_CREDENTIALS"]
     conteudo = base64.b64decode(conteudo_codificado)
     credentials = json.loads(conteudo)
-
     service_account = gspread.service_account_from_dict(credentials)
     spreadsheet = service_account.open_by_key(spreadsheet_id)
+    
+    return spreadsheet
+
+def envia_sheets():
+    df = gera_df()
+    spreadsheet = login_sheets()
+
     worksheet = spreadsheet.worksheet("dados_agenda") 
     worksheet.append_rows(df.values.tolist())
 
