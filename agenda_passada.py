@@ -12,15 +12,14 @@ from bs4 import BeautifulSoup
 from datetime import date, datetime
 from pytz import timezone
 
-from google.colab import drive
-drive.mount('/content/drive')
+from agenda_dados import login_sheets
 
 def gera_data_passado():
     resultado = []
     calendario = []
 
-    data = datetime.date(2019, 1, 30) #inserir data de 1 dia antes do mês que se quer verificar
-    for i in range(31): #inserir número de dias que há no mês verificado
+    data = datetime.date(2019, 1, 30)
+    for i in range(29):
       data = data + datetime.timedelta(days=1)
       data_passado = data.strftime('%d/%m/%Y')
       data_pass = data.strftime('%Y-%m-%d')
@@ -93,16 +92,12 @@ def gera_df_passado():
     return df
 
 def envia_sheets_passado():
-    df = gera_df()
-    
-    spreadsheet_id = os.environ["GOOGLE_SHEET_ID"]
-    conteudo_codificado = os.environ["GOOGLE_SHEETS_CREDENTIALS"]
-    conteudo = base64.b64decode(conteudo_codificado)
-    credentials = json.loads(conteudo)
-
-    service_account = gspread.service_account_from_dict(credentials)
-    spreadsheet = service_account.open_by_key(spreadsheet_id)
+    df = gera_df_passado()
+    spreadsheet = login_sheets()
     worksheet = spreadsheet.worksheet("dados_agenda") 
     worksheet.append_rows(df.values.tolist())
     
 envia_sheets_passado()
+
+if __name__ == "__main__":
+    envia_sheets_passado()
