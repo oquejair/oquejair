@@ -1,7 +1,4 @@
-import base64
 import csv
-import json
-import os
 
 import gspread
 import pandas as pd
@@ -10,6 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 from pytz import timezone
+
+from log_gsheets import login_sheets
 
 def gera_data_hoje():
     data_fuso = datetime.now(timezone('America/Bahia'))
@@ -65,16 +64,6 @@ def gera_df():
     df = df[["data", "hora_inicio", "hora_fim", "compromisso", "local"]] 
     
     return df
-
-def login_sheets():
-    spreadsheet_id = os.environ["GOOGLE_SHEET_ID"]
-    conteudo_codificado = os.environ["GOOGLE_SHEETS_CREDENTIALS"]
-    conteudo = base64.b64decode(conteudo_codificado)
-    credentials = json.loads(conteudo)
-    service_account = gspread.service_account_from_dict(credentials)
-    spreadsheet = service_account.open_by_key(spreadsheet_id)
-    
-    return spreadsheet
 
 def envia_sheets():
     df = gera_df()
