@@ -21,7 +21,7 @@ O programa faz raspagem de dados no site da agenda oficial do presidente automat
 
 No Telegram, o **robô OqueJair**, ao ser acionado por qualquer comando ou palavra, informa a agenda do dia do presidente do Brasil, atualizada no momento em que roda. O código está em `app.py`.
 
-No Twitter, o **robô OqueJair** tuíta no momento em que for ocorrer um compromisso ou informa que naquele dia não há agenda oficial do presidente do Brasil. O código está em `twitter_bot.py`.
+No Twitter, o **robô OqueJair** tuíta no momento em que for ocorrer um compromisso ou informa que naquele dia não há agenda oficial do presidente do Brasil. O código está em `twitter_bot.py`. A partir de 27/03/22, o bot também passa a avisar quando checa se no dia ou no último mês houve inserção de eventos na agenda após eles ocorrerem. 
 
 A planilha do Google, de acesso restrito, é atualizada diariamente antes das 00h com todos as informações disponibilizadas no dia pelo site oficial do governo. O código para acessá-la está na última função de `agenda_dados.py`.
 
@@ -48,10 +48,9 @@ Para que seu código rode, tenha o Python 3.7+ e instale as bibliotecas:
 - gspread == 5.0.0
 - gunicorn
 - pandas
-- numpy
 - oauth2client == 4.1.3
 - requests
 - tweepy == 4.4.0
 
 ## Atualização
-Última atualização: 12/01/2021
+Última atualização: 27/03/2022
