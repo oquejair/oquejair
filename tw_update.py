@@ -1,4 +1,3 @@
-import csv
 import itertools 
 import math
 import sys
@@ -94,34 +93,31 @@ def today_update_tweet():
                 if tw_hour < now_today:
                     format_twh = tw_hour.strftime('%Hh%M')
                     for tweet_tw in today_tweet_check:
-                        if tweet_tw in today_posted_list:
+                        if tweet_tw not in today_posted_list:
                             if format_twh in tweet_tw:
                               tweet_tw_phrases = f"Atenção! Evento de hoje foi adicionado após ocorrer: \n{tweet_tw}"
                               today_tweet_updates.append(tweet_tw_phrases)
+                              today_tweet_updates = list(set(today_tweet_updates))
                         else:
                             print(f"Tudo ok até aqui, sem atualizações")
 
         #postar tanto em caso de tweets curtos quanto longos
-        twitter_handle = ['@OqueJair']
+        if today_tweet_updates != []:
+            for tweet_final in today_tweet_updates:
+                tweet_length = len(tweet_final)
+                if tweet_length <= 280: #caso for tweet curto
+                    api.create_tweet(text=tweet_final)
+                #para tweets longos:
+                elif tweet_length >= 280:
+                    tweet_length_limit = tweet_length / 280
+                    tweet_chunk_length = tweet_length / math.ceil(tweet_length_limit)
+                    tweet_chunks = textwrap.wrap(tweet_final,  math.ceil(tweet_chunk_length), break_long_words=False)
 
-        for handle in twitter_handle:
-            handle_length = len(handle)
-            if today_tweet_updates != []:
-                for tweet_final in today_tweet_updates:
-                    tweet_length = len(tweet_final)
-                    if tweet_length <= 280: #caso for tweet curto
-                        api.create_tweet(text=tweet_final)
-                    #para tweets longos:
-                    elif tweet_length >= 280:
-                        tweet_length_limit = tweet_length / 280
-                        tweet_chunk_length = tweet_length / math.ceil(tweet_length_limit) + handle_length
-                        tweet_chunks = textwrap.wrap(tweet_final,  math.ceil(tweet_chunk_length), break_long_words=False)
-
-                        for x, chunk in zip(range(len(tweet_chunks)), tweet_chunks):
-                            if x == 0:
-                                api.create_tweet(text= f'1 of {len(tweet_chunks)} {chunk}')
-                            else:
-                                api.create_tweet(text= f'{x+1} of {len(tweet_chunks)} {chunk}')
+                    for x, chunk in zip(range(len(tweet_chunks)), tweet_chunks):
+                        if x == 0:
+                            api.create_tweet(text= f'1 of {len(tweet_chunks)} {chunk}')
+                        else:
+                            api.create_tweet(text= f'{x+1} of {len(tweet_chunks)} {chunk}')
     else:
         print("No tweets now")
 
@@ -163,27 +159,23 @@ def update_tweet():
     else:
         print("There are no updates")
 
-#tweetar se houver tanto tweets longos quanto curtos
-    twitter_handle = ['@OqueJair']
-    
-    for handle in twitter_handle:
-        handle_length = len(handle)
-        if update_tweet_list !=[]:
-            for tw_past in update_tweet_list:
-                tweet_length = len(tw_past)
-                if tweet_length <= 280: #caso for tweet curto
-                    api.create_tweet(text=tw_past)
-                #para tweets longos:
-                elif tweet_length >= 280:
-                    tweet_length_limit = tweet_length / 280
-                    tweet_chunk_length = tweet_length / math.ceil(tweet_length_limit) + handle_length
-                    tweet_chunks_past = textwrap.wrap(tw_past,  math.ceil(tweet_chunk_length), break_long_words=False)
+    #tweetar se houver tanto tweets longos quanto curtos
+    if update_tweet_list !=[]:
+        for tw_past in update_tweet_list:
+            tweet_length = len(tw_past)
+            if tweet_length <= 280: #caso for tweet curto
+                api.create_tweet(text=tw_past)
+            #para tweets longos:
+            elif tweet_length >= 280:
+                tweet_length_limit = tweet_length / 280
+                tweet_chunk_length = tweet_length / math.ceil(tweet_length_limit)
+                tweet_chunks_past = textwrap.wrap(tw_past,  math.ceil(tweet_chunk_length), break_long_words=False)
 
-                    for x_past, chunk_past in zip(range(len(tweet_chunks_past)), tweet_chunks_past):
-                        if x_past == 0:
-                            api.create_tweet(text=f'1 of {len(tweet_chunks_past)} {chunk_past}')
-                        else:
-                            api.create_tweet(text=f'{x_past+1} of {len(tweet_chunks_past)} {chunk_past}')
+                for x_past, chunk_past in zip(range(len(tweet_chunks_past)), tweet_chunks_past):
+                    if x_past == 0:
+                        api.create_tweet(text=f'1 of {len(tweet_chunks_past)} {chunk_past}')
+                    else:
+                        api.create_tweet(text=f'{x_past+1} of {len(tweet_chunks_past)} {chunk_past}')
 
 def update_sheets():
     update_list = check_updates()
