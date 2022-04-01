@@ -145,6 +145,23 @@ def check_updates():
     for value_update in check_list:
         if value_update not in new_values_list:
             update_list.append(value_update)
+            
+    #Remover "sem compromisso oficial" e chegadas e partidas de viagens
+    if update_list != []:
+        sem_compromisso  = [sem_compromisso for sem_compromisso in update_list if "Sem compromisso oficial" in sem_compromisso]
+        for sem_compromisso_remove in sem_compromisso:
+            if sem_compromisso_remove in update_list:
+                update_list.remove(sem_compromisso_remove)
+
+        partida  = [partida for partida in update_list if "Partida" in partida[3]]
+        for partida_remove in partida:
+            if partida_remove in update_list:
+                update_list.remove(partida_remove)
+
+        chegada  = [chegada for chegada in update_list if "Chegada" in chegada[3]]
+        for chegada_remove in chegada:
+            if chegada_remove in update_list:
+                update_list.remove(chegada)
 
     return update_list
 
