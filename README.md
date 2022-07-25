@@ -6,13 +6,15 @@ Olá! Este é um projeto que visa dar transparência à agenda oficial do presid
 
 ## O que tem por aqui
 
-O projeto tem 3 produtos finais:
+O projeto tem 4 produtos finais:
+
+- Site com visualização de dados - https://oquejair.github.io/site/
 
 - Robô no Telegram - https://t.me/oquejair_bot
 
 - Robô no Twitter - https://twitter.com/OqueJair
 
-- Publicação diária dos dados da agenda em planilha do Google Sheets
+- Captura diária da agenda para uma base de dados
 
 ## Como funciona
 
