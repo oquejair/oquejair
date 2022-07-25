@@ -55,4 +55,4 @@ Para que seu código rode, tenha o Python 3.7+ e instale as bibliotecas:
 - tweepy == 4.4.0
 
 ## Atualização
-Última atualização: 28/03/2022
+Última atualização: 24/07/2022
